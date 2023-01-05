@@ -11,3 +11,7 @@ for book in response["items"]:
     published = volume["publishedDate"]
     description = volume["description"]
     print(f"{title} ({published}) | {description}") 
+text = "text.txt" # very orginal name
+file = open(text, "w")
+wr = file.write(f"{title} | {published} | {description}")
+file.close()
