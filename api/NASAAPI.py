@@ -1,28 +1,55 @@
 import requests
+import os
+import shutil
+os.system('cls')
 
-endpoint = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos"
-api_key = "T8d5ESrkveg48hjitA2nFz2W74WSAjA1A0R1mtbH"
-query_params = {"api_key": api_key, "earth_date": "2023-01-05"}
-response = requests.get(endpoint, params=query_params)
-response
+api_key ="1khS1UrLZ8MWfQNGLvBJNmB0H4GWxZFfazJKcWSs"
+params = {"api_key": api_key, "earth_date": "2020-07-01"}
+response = requests.get("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&page=2&api_key=1khS1UrLZ8MWfQNGLvBJNmB0H4GWxZFfazJKcWSs",
+params=params)
+request = response.request
 response.json()
-{'photos': {'id': 754118,
-   'sol': 2809,
-   'camera': {'id': 20,
-    'name': 'FHAZ',
-    'rover_id': 5,
-    'full_name': 'Front Hazard Avoidance Camera'},
-   'img_src': 'https://mars.nasa.gov/msl-raw-images/...JPG',
-   'earth_date': '2023-01-05',
-   'rover': {'id': 5,
-    'name': 'Curiosity',
-    'landing_date': '2012-08-06',
-    'launch_date': '2011-11-26',
-    'status': 'active'}},
-}
-
 photos = response.json()["photos"]
-print(f"Found {len(photos)} photos")
-photos[4]["img_src"]
-'https://mars.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/02809/opgs/edr/rcam/RRB_646869036EDR_F0810628RHAZ00337M_.JPG'
-print()
+image_url = photos[16]["img_src"]
+image_url_2 = photos[21]["img_src"]
+image_url_3 = photos[6]["img_src"]
+filename1 = image_url.split("/")[-1]
+filename2 = image_url_2.split("/")[-1]
+filename3 = image_url_3.split("/")[-1]
+
+r = requests.get(image_url, stream = True)
+r2 = requests.get(image_url_2, stream = True)
+r3 = requests.get(image_url_3, stream = True)
+
+if r.status_code == 200:
+    r.raw.decode_content = True
+
+    with open(filename1,'wb') as f:
+        shutil.copyfileobj(r.raw, f)
+
+    print('Image sucessfully Downloaded: ',filename1)
+else:
+    print('Image Couldnt be retreived')
+if r2.status_code == 200:
+    r2.raw.decode_content = True
+
+    with open(filename2,'wb') as f:
+        shutil.copyfileobj(r2.raw, f)
+
+    print('Image sucessfully Downloaded: ',filename2)
+else:
+    print('Image Couldnt be retreived')
+if r3.status_code == 200:
+    r3.raw.decode_content = True
+
+    with open(filename3,'wb') as f3:
+        shutil.copyfileobj(r3.raw, f3)
+
+    print('Image sucessfully Downloaded: ',filename3)
+else:
+    print('Image Couldnt be retreived')
+response.json()
+photos = response.json()["photos"]
+print(response.text)
+print(response.url[1])
+print(response.headers)
